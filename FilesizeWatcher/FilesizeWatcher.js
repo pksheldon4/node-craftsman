@@ -8,8 +8,10 @@ var FilesizeWatcher = function(path) {
   self.callbacks = {};
 
   if (/^\//.test(path) === false) {
-    self.callbacks['error']('Path does not start with a slash');
-    retrun
+    process.nextTick(function() {
+      self.callbacks['error']('Path does not start with a slash');
+    })
+    return;
   }
 
   fs.stat(path, function(err, stats) {

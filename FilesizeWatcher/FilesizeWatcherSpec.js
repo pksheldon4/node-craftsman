@@ -18,7 +18,7 @@ describe('FilesizeWatcher', function() {
       watcher = new FilesizeWatcher(path);
 
       watcher.on('grew', function(gain) {
-        expect(gain).toBe(54);
+        expect(gain).toBe(5);
         done();
       });
 
@@ -31,7 +31,7 @@ describe('FilesizeWatcher', function() {
   it('should fire a "shrank" event when the file shrank in size', function(done) {
 
       var path = '/var/tmp/filesizewatcher.test';
-      exec('rm -f ' + path + ' ; touch ' + path, function() {
+      exec('rm -f ' + path + ' ; echo "test" > ' + path, function() {
       watcher = new FilesizeWatcher(path);
 
       watcher.on('shrank', function(gain) {
