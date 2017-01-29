@@ -73,9 +73,10 @@ function handleRequest(request, response) {
         var resultAsString = '';
 
         if (filter) {
-            query = connection.query('SELECT id, content FROM test ' +
-                'WHERE content like "' +
-                filter + '%"');
+            var q = 'SELECT id, content FROM test WHERE content like ?';
+            console.log("######" + q);
+            query = connection.query(q, [filter +"%"]);
+
         } else {
             query = connection.query('SELECT id, content FROM test');
         }
@@ -97,8 +98,7 @@ function handleRequest(request, response) {
 
     function addContentToDatabase(content, callback) {
         var connection = mysql.createConnection(connectionInfo);
-        connection.query('INSERT INTO test (content)' +
-            'VALUES ("' + content + '")',
+        connection.query('INSERT INTO test (content) VALUES (?)', content,
             function(err) {
                 if (err) {
                     console.log('Could not insert content "' +
