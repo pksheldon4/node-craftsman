@@ -37,9 +37,9 @@ MongoClient.connect('mongodb://localdocker:27017/accounting', function(err, conn
               console.log();
               console.log('Updated', count, 'documents');
               doFind(function() {
-                // collection.remove({}, function() {
+                collection.remove({}, function() {
                   connection.close();
-                // });
+                });
               });
         });
     };
