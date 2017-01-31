@@ -1,0 +1,9 @@
+mysql:
+  image: manhattan-internal.jfrog.io/ma-cp-mysql:gold
+  ports:
+    - 3306:3306
+  environment:
+    MYSQL_DATABASE: wrangler
+    MYSQL_USER: wrangler
+    MYSQL_PASSWORD: wrangler
+    MYSQL_ROOT_PASSWORD: admin123
