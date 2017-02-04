@@ -13,7 +13,7 @@ describe('The API', function() {
     beforeEach(function(done) {
        server = Server('8081');
        server.listen(function(err) {
-           resetDatabase(dbSession, function() {
+            resetDatabase(dbSession, function() {
               done(err);
            });
        });
@@ -26,23 +26,22 @@ describe('The API', function() {
          });
        });
     });
-
     it('should respond to a GET request at /api/keywords/', function(done) {
         var expected = {
             '_items': [{
                     'id': 1,
                     'value': 'Aubergine',
-                    'catgoryId': 1
+                    'categoryID': 1
                 },
                 {
                     'id': 2,
                     'value': 'Onion',
-                    'catgoryId': 1
+                    'categoryID': 1
                 },
                 {
                     'id': 3,
                     'value': 'Knife',
-                    'catgoryId': 2
+                    'categoryID': 2
                 }
             ]
         };
@@ -75,11 +74,10 @@ describe('The API', function() {
             function(err, results) {
                 if (err) throw (err);
                 request.get({
-                        'url': 'http://localhost:8080/api/keywords',
+                        'url': 'http://localhost:8081/api/keywords/',
                         'json': true
                     },
                     function(err, res, body) {
-                        console.log(body);
                         expect(res.statusCode).toBe(200);
                         expect(body).toEqual(expected);
                         done();

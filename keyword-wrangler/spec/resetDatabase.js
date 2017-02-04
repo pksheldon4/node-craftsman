@@ -3,6 +3,7 @@
 var async = require('async');
 
 var resetDatabase = function(dbSession, callback) {
+
     async.series(
         [
             function(callback) {
@@ -15,7 +16,10 @@ var resetDatabase = function(dbSession, callback) {
                     callback(err);
                 });
             }
-        ]
+        ],
+        function(err, results) {
+            callback(err);
+        }
     );
 };
 

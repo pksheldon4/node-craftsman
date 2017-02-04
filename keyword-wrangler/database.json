@@ -1,0 +1,19 @@
+{
+  "test": {
+    "driver": "sqlite3",
+    "filename": "/home/prestonx/code/git/GitHub/node-craftsman/keyword-wrangler/sqlitedb/keyword-wrangler.test.sqlite"
+  },
+
+  "dev": {
+    "driver": "sqlite3",
+    "filename": "/home/prestonx/code/git/GitHub/node-craftsman/keyword-wrangler/sqlitedb/keyword-wrangler.test.sqlite"
+  },
+
+  "production": {
+    "driver": "mysql",
+    "host": "localhost",
+    "user": "root",
+    "password": "admin123",
+    "database": "wrangler"
+  }
+}
