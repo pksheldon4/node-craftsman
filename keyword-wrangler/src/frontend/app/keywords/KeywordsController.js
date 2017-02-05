@@ -1,22 +1,22 @@
 'use strict';
 
-(function() {
+(function () {
 
     var app = angular.module('app');
 
-    app.controller('KeywordsController', function($scope, RepositoryFactory, resoveEntity){
+    app.controller('KeywordsController', function ($scope, RepositoryFactory, resoveEntity) {
 
         /* == Frontend Initialization */
         /* All of this happens as soon as the page loads */
         /* resolveEntity is a helper function which is used in partials/keywordCategoryGridCell.html
-           in order to display the name of a keyword category based on its id
+         in order to display the name of a keyword category based on its id
          */
 
         $scope.resolveEntity = resoveEntity;
 
         /*
-            A repository is the connection between this controller and the REST Api.
-            We use one for keyword categories...
+         A repository is the connection between this controller and the REST Api.
+         We use one for keyword categories...
          */
         var KeywordCategoriesRepository = new RepositoryFactory({
             endpoint: 'keywords/categories',
@@ -26,23 +26,107 @@
         });
 
         var KeywordsRepository = new RepositoryFactory({
-           endpoint: 'keywords',
-            retrieveItems: function(data) {
-               return data._items;
+            endpoint: 'keywords',
+            retrieveItems: function (data) {
+                return data._items;
             }
         });
 
-       /* When the frontend loads, we want the controller to immediately load all
-          Keyword Categories and Keywords from the API.
-        */
-       KeywordCategoriesRepository.readAll().then(function (keywordCategories) {
-          $scope.keywordCategories = keywordCategories;
-       });
+        /* When the frontend loads, we want the controller to immediately load all
+         Keyword Categories and Keywords from the API.
+         */
+        KeywordCategoriesRepository.readAll().then(function (keywordCategories) {
+            $scope.keywordCategories = keywordCategories;
+        });
+
         KeywordRepository.readAll().then(function (keywords) {
             $scope.keywords = keywords;
         });
-        //Continue from Page 113/114
 
+        /* The grid... */
+
+        $scope.keywordsGridOptions = {
+            data: 'keywords', //This makes the grid use the data in $scope.keywords
+            enableCellSelection: false, //breaks edit of cells with select element if true.
+            enableCellEdit: true,
+            keepLastSelected: false,
+            enableRowSelection: false,
+            multiSelect: false,
+            enableSorting: true,
+            enableColumnReszie: true,
+            enableColumnReordering: true,
+            showFilter: false,
+            rowHeight: '40',
+            columnDefs: [
+                {
+                    field: 'id',
+                    displayName: 'ID',
+                    enableCellEdit: false,
+                    width: '80px'
+                },
+                {
+                    field: 'value',
+                    displayName: 'ID',
+                    enableCellEdit: false,
+                    width: '80px'
+                },
+                {
+                    field: 'value',
+                    displayName: 'Value'
+                },
+                {
+                    /* The keywrod category field does not use the build-in cell template, but our own. */
+                    field: 'keywordCategoryID',
+                    displayName: 'Category',
+                    cellTemplate: 'app/keywords/partials/keywordCategoryGridCell.html',
+                    editableCellTemplate: 'app/keywords/partials/keywordCategoryGridCellEditor.html'
+                },
+                {
+                    /* Same goes for the operations columns */
+                    field: '',
+                    displayName: 'Operations',
+                    cellTemplate: 'app/keywords/partials/operationsGridCell.html',
+                    enableCellEdit: false,
+                    sortable: false
+                }
+            ]
+        };
+        /* == Frontend Operations == */
+        /* These functions are called when the frontend is operated, e.g., if a button is clicked */
+        $scope.createKeyword = function (newKeyword) {
+            $scope.$broadcast('ngGridEventEndCellEdit');
+            if (newKeyword.value.length > 0) {
+                KeywordsRepository.createOne(newKeyword).then(function () {
+                    KeywordsRepository.readAll().then(function (keywords) {
+                        $scope.keywords = keywords;
+                    });
+                });
+            }
+        };
+
+        $scope.updateKeyword = function (keyword) {
+            $scope.$broadcast('ngGridEventEndCellEdit');
+            KeywordsRepository.updateOne(keyword);
+        };
+
+        $scope.deleteKeyword = function (keyword) {
+            $scope.$broadcast('ngGridEventEndCellEdit');
+            KeywordsRepository.deleteOne(keyword).then(function () {
+                KeywordsRepository.readAll().then(function (keywords) {
+                    $scope.keywords = keywords;
+                });
+            });
+        };
+
+        /* These are here to make the grid behave cleanly in regards to the keyword category select */
+        $scope.stopEditingKeywordCategory = function () {
+            $scope.$broadcast('ngGridEventEndCellEdit');
+        };
+
+        $scope.$on('ngGridEvenRows',
+            function (newRows) {
+                $scope.$broadcast('ngGridEventEndCellEdit');
+            });
     });
 
 })();
